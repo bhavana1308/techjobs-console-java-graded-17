@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -45,6 +46,8 @@ public class TechJobs {
 
                     System.out.println("\n*** All " + columnChoices.get(columnChoice) + " Values ***");
 
+                    Collections.sort(results);
+
                     // Print list of skills, employers, etc
                     for (String item : results) {
                         System.out.println(item);
@@ -60,16 +63,32 @@ public class TechJobs {
                 System.out.println("\nSearch term:");
                 String searchTerm = in.nextLine().toLowerCase();
 
+//                if (searchField.equals("all")) {
+//                    printJobs(JobData.findByValue(searchTerm));
+//                } else {
+//                    printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
+//                }
+
+                ArrayList<HashMap<String, String>> searchResults;
+
                 if (searchField.equals("all")) {
-                    printJobs(JobData.findByValue(searchTerm));
+                    searchResults = JobData.findByValue(searchTerm);
                 } else {
-                    printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
+                    searchResults = JobData.findByColumnAndValue(searchField, searchTerm);
                 }
 
 
+                if (searchField.equals("employer") || searchField.equals("location") || searchField.equals("position type")) {
+                    searchResults.sort((job1, job2) -> job1.get(searchField).compareTo(job2.get(searchField)));
+                }
+
+                printJobs(searchResults);
             }
+
+
         }
     }
+
 
     // ﻿Returns the key of the selected item from the choices Dictionary
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
